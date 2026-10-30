@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-brand: #4F46E5;
+  --color-brand-light: #EEF2FF;
+  --color-canvas: #F7F8FA;
+  --color-card: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-text: #1A1D21;
+  --color-muted: #6B7280;
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+}
+
+* {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: #F7F8FA;
+  color: #1A1D21;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+.sidebar-item-active {
+  background-color: #EEF2FF;
+  color: #4F46E5;
+  border-left: 3px solid #4F46E5;
+}
+
+.sidebar-item {
+  border-left: 3px solid transparent;
+}
+
+.sidebar-item:hover {
+  background-color: #F9FAFB;
+  color: #1A1D21;
+}
+
+.stat-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+.table-row:hover { background-color: #F9FAFB; }
+
+.btn-primary {
+  background-color: #4F46E5;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.btn-primary:hover { background-color: #4338CA; }
+
+.btn-danger {
+  background-color: #FEF2F2;
+  color: #DC2626;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid #FECACA;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-danger:hover { background-color: #DC2626; color: white; border-color: #DC2626; }
+
+.btn-edit {
+  background-color: #EEF2FF;
+  color: #4F46E5;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid #C7D2FE;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-edit:hover { background-color: #4F46E5; color: white; border-color: #4F46E5; }
+
+.pill-success { background: #16A34A; color: white; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; }
+.pill-danger { background: #DC2626; color: white; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; }
+.pill-warning { background: #D97706; color: white; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; }
+
+.dropzone {
+  border: 2px dashed #D1D5DB;
+  border-radius: 10px;
+  padding: 2rem;
+  text-align: center;
+  background: #F9FAFB;
+  transition: border-color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+.dropzone:hover {
+  border-color: #4F46E5;
+  background: #EEF2FF;
+}
+
+.rich-toolbar {
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  flex-wrap: wrap;
+}
+.toolbar-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #374151;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: background 0.1s;
+}
+.toolbar-btn:hover { background: #E5E7EB; }
+.toolbar-divider { width: 1px; background: #D1D5DB; margin: 2px 4px; align-self: stretch; }
+
+/* Dark mode keeps the enterprise palette restrained while preserving status colors. */
+.dark body,
+.dark .theme-shell {
+  background-color: #0F131B !important;
+  color: #E5E7EB;
+}
+
+.dark .bg-white {
+  background-color: #151A24 !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #1B2230 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #242C3A !important;
+}
+
+.dark .bg-indigo-50 {
+  background-color: #252447 !important;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark [style*="#1A1D21"],
+.dark [style*="rgb(26, 29, 33)"] {
+  color: #F3F4F6 !important;
+}
+
+.dark .text-gray-700 {
+  color: #D1D5DB !important;
+}
+
+.dark .text-gray-600 {
+  color: #B8C0CC !important;
+}
+
+.dark .text-gray-500 {
+  color: #9CA7B8 !important;
+}
+
+.dark .text-gray-400,
+.dark [style*="#9CA3AF"],
+.dark [style*="rgb(156, 163, 175)"] {
+  color: #8490A3 !important;
+}
+
+.dark .text-gray-300 {
+  color: #6B7688 !important;
+}
+
+.dark .border,
+.dark .border-b,
+.dark .border-t,
+.dark .border-l,
+.dark .border-r,
+.dark [style*="border-color"] {
+  border-color: #2A3342 !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #111722;
+  border-color: #303A4A !important;
+  color: #E5E7EB;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #6F7B8E;
+}
+
+.dark .sidebar-item:hover,
+.dark .table-row:hover,
+.dark .hover\:bg-gray-50:hover {
+  background-color: #1B2230 !important;
+}
+
+.dark .sidebar-item-active {
+  background-color: #252447;
+  color: #A5B4FC;
+  border-left-color: #818CF8;
+}
+
+.dark .sidebar-item-active svg {
+  color: #A5B4FC !important;
+}
+
+.dark .stat-card:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
+}
+
+.dark .btn-edit {
+  background-color: #252447;
+  border-color: #433F78;
+  color: #A5B4FC;
+}
+
+.dark .btn-danger {
+  background-color: #3A2027;
+  border-color: #67303A;
+  color: #FCA5A5;
+}
+
+.dark .dropzone {
+  background-color: #111722;
+  border-color: #3A4557;
+}
+
+.dark .dropzone:hover {
+  background-color: #252447;
+  border-color: #818CF8;
+}
+
+.dark .rich-toolbar {
+  background-color: #1B2230;
+  border-color: #2A3342;
+}
+
+.dark .toolbar-btn {
+  color: #D1D5DB;
+}
+
+.dark .toolbar-btn:hover {
+  background-color: #2A3342;
+}
+
+.dark .toolbar-divider {
+  background-color: #3A4557;
+}
+
+.dark [style*="background: white"],
+.dark [style*="background-color: white"],
+.dark [style*="rgb(255, 255, 255)"] {
+  background-color: #151A24 !important;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #3A4557;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #526075;
+}

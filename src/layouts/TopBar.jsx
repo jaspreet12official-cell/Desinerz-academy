@@ -1,9 +1,13 @@
+import { useLocation } from "react-router-dom";
 import { Icon, Avatar } from "../components/ui";
 import { ICONS } from "../config/icons";
 import { pageTitles } from "../config/navigation";
 
-export default function TopBar({ page, theme, setTheme }) {
+export default function TopBar({ theme, setTheme }) {
+  const { pathname } = useLocation();
+  const page = pathname.split("/")[1] || "dashboard";
   const next = theme === "light" ? "dark" : "light";
+
   return (
     <header className="fixed top-0 left-60 right-0 h-14 bg-white border-b flex items-center px-6 z-10" style={{ borderColor: "#E5E7EB" }}>
       <div className="flex-1">

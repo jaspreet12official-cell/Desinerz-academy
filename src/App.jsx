@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import useTheme from "./hooks/useTheme";
 import AdminLayout from "./layouts/AdminLayout";
 
@@ -21,35 +21,39 @@ import CouncilPage from "./pages/operations/CouncilPage";
 import GetInTouchPage from "./pages/operations/GetInTouchPage";
 import EnrollmentRequestPage from "./pages/operations/EnrollmentRequestPage";
 
-const pages = {
-  dashboard: DashboardPage,
-  "home-page": HomePage,
-  about: AboutPage,
-  universities: UniversitiesPage,
-  "contact-us": ContactPage,
-  gallery: GalleryPage,
-  terms: () => <TermsPage title="Terms & Conditions" />,
-  privacy: PrivacyPage,
-  events: EventsPage,
-  courses: CoursesPage,
-  enrollment: EnrollmentPage,
-  certificate: CertificatePage,
-  subjects: SubjectsPage,
-  "fee-structure": FeeStructurePage,
-  "fee-collection": FeeCollectionPage,
-  council: CouncilPage,
-  "get-in-touch": GetInTouchPage,
-  "enrollment-req": EnrollmentRequestPage,
-};
+const routes = [
+  { path: "dashboard", element: <DashboardPage /> },
+  { path: "home-page", element: <HomePage /> },
+  { path: "about", element: <AboutPage /> },
+  { path: "universities", element: <UniversitiesPage /> },
+  { path: "contact-us", element: <ContactPage /> },
+  { path: "gallery", element: <GalleryPage /> },
+  { path: "terms", element: <TermsPage title="Terms & Conditions" /> },
+  { path: "privacy", element: <PrivacyPage /> },
+  { path: "events", element: <EventsPage /> },
+  { path: "courses", element: <CoursesPage /> },
+  { path: "enrollment", element: <EnrollmentPage /> },
+  { path: "certificate", element: <CertificatePage /> },
+  { path: "subjects", element: <SubjectsPage /> },
+  { path: "fee-structure", element: <FeeStructurePage /> },
+  { path: "fee-collection", element: <FeeCollectionPage /> },
+  { path: "council", element: <CouncilPage /> },
+  { path: "get-in-touch", element: <GetInTouchPage /> },
+  { path: "enrollment-req", element: <EnrollmentRequestPage /> },
+];
 
 export default function App() {
-  const [page, setPage] = useState("dashboard");
   const [theme, setTheme] = useTheme();
-  const Page = pages[page] || DashboardPage;
 
   return (
-    <AdminLayout page={page} setPage={setPage} theme={theme} setTheme={setTheme}>
-      <Page />
+    <AdminLayout theme={theme} setTheme={setTheme}>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {routes.map((r) => (
+          <Route key={r.path} path={`/${r.path}`} element={r.element} />
+        ))}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
     </AdminLayout>
   );
 }

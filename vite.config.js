@@ -1,14 +1,19 @@
-import { defineConfig } from 'vite';
+iimport { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 import siteConfiguration from './.figma/make/site.json';
+
 // Vite config — https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     // .figma/make/deploy-preview passes `--mode development` for cached-preview builds.
     const emitSourcemaps = mode === 'development';
     return {
-        base: process.env.FIGMA_PUBLIC_URL ? `${process.env.FIGMA_PUBLIC_URL}/` : '/',
+        base: process.env.FIGMA_PUBLIC_URL
+            ? `${process.env.FIGMA_PUBLIC_URL}/`
+            : process.env.GITHUB_ACTIONS
+                ? '/Desinerz-academy/'
+                : '/',
         build: {
             sourcemap: emitSourcemaps ? 'inline' : false,
             minify: !emitSourcemaps,
@@ -42,6 +47,7 @@ export default defineConfig(({ mode }) => {
         },
     };
 });
+
 /** Applies /.figma/make/site.json to the generated document shell. */
 function figmaSiteConfiguration(config) {
     function sanitizeHtmlValue(value) {
@@ -168,6 +174,7 @@ function figmaSiteConfiguration(config) {
         },
     };
 }
+
 /**
  * Replay the most recent build error to clients that connect after
  * it was first broadcast. Vite buffers an error payload only while
@@ -209,6 +216,7 @@ function figmaErrorOverlayReplay() {
         },
     };
 }
+
 /**
  * Reload when a module that previously defined a React Refresh boundary stops
  * defining one. This happens when an agent moves a component into a new file
@@ -271,6 +279,7 @@ function figmaReactRefreshBoundaryFallback() {
         },
     };
 }
+
 /**
  * Serves a blank render-target page at /.figma/make/kit.html that
  * the Figma preview script drives directly. The page exposes a

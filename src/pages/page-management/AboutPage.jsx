@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Card, Button, Input, Dropzone, RichEditor, SEOCard } from "../../components/ui";
+import { Card, Button, Input, Dropzone, RichEditor,
+   SEOCard } from "../../components/ui";
 
 const aboutContent = `About\n\nWhat is Desinerz Academy?\n\nAt Desinerz Academy, we are more than a coaching centre — we are a nurturing community where students receive personalized guidance and support to choose the right career path from the start of their learning journey. Our focus is on education and creating a family-like environment, where care, encouragement, and personal development are paramount.`;
 

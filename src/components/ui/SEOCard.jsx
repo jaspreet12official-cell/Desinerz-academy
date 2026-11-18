@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Icon from "./Icon";
-import Input from "./Input";
+import Input from "./InputField";
 import Button from "./Button";
 import { ICONS } from "../../config/icons";
 

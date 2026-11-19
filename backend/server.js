@@ -7,6 +7,7 @@ import MongoStore from "connect-mongo";
 
 import connectDB from "./config/db.js";
 import adminRoutes from "./routes/adminRoute.js";
+import courseRoutes from "./routes/courseRoute.js";
 
 dotenv.config();
 
@@ -44,17 +45,11 @@ app.use(
   })
 );
 
-// HEALTH CHECK
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Backend API is running!",
-  });
-});
 
 // ADMIN ROUTES
 app.use("/api/admin", adminRoutes);
 
+app.use("/api/courses", courseRoutes);
 // SERVER
 const PORT = process.env.PORT || 5000;
 

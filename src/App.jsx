@@ -1,6 +1,11 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+
 import useTheme from "./hooks/useTheme";
 import AdminLayout from "./layouts/AdminLayout";
+
+import ProtectedRoute from "./routes/protectedRoutes";
+import LoginPage from "./pages/adminLogin/AdminLogin";
 
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import HomePage from "./pages/page-management/HomePage";
@@ -42,18 +47,48 @@ const routes = [
   { path: "enrollment-req", element: <EnrollmentRequestPage /> },
 ];
 
+function ProtectedLayout({ theme, setTheme }) {
+  return (
+    <ProtectedRoute>
+      <AdminLayout theme={theme} setTheme={setTheme}>
+        <Outlet />
+      </AdminLayout>
+    </ProtectedRoute>
+  );
+}
+
 export default function App() {
   const [theme, setTheme] = useTheme();
 
   return (
-    <AdminLayout theme={theme} setTheme={setTheme}>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        {routes.map((r) => (
-          <Route key={r.path} path={`/${r.path}`} element={r.element} />
+    <Routes>
+
+      {/* PUBLIC LOGIN */}
+      <Route path="/login" element={<LoginPage />} />
+
+      {/* PROTECTED ADMIN PAGES */}
+      <Route
+        path="/"
+        element={
+          <ProtectedLayout
+            theme={theme}
+            setTheme={setTheme}
+          />
+        }
+      >
+        <Route index element={<Navigate to="dashboard" replace />} />
+
+        {routes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={route.element}
+          />
         ))}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-    </AdminLayout>
+      </Route>
+
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+    </Routes>
   );
 }

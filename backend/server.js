@@ -8,6 +8,8 @@ import MongoStore from "connect-mongo";
 import connectDB from "./config/db.js";
 import adminRoutes from "./routes/adminRoute.js";
 import courseRoutes from "./routes/courseRoute.js";
+import studentRoutes from "./routes/studentRoute.js";
+
 
 dotenv.config();
 
@@ -50,6 +52,8 @@ app.use(
 app.use("/api/admin", adminRoutes);
 
 app.use("/api/courses", courseRoutes);
+app.use("/api/students", studentRoutes);
+
 // SERVER
 const PORT = process.env.PORT || 5000;
 

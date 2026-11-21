@@ -60,6 +60,27 @@ const courseSchema = new mongoose.Schema(
       },
       min: 1,
     },
+
+    // OPTIONAL COURSE PDF UPLOAD
+    upload: {
+      fileName: {
+        type: String,
+      },
+
+      originalName: {
+        type: String,
+      },
+
+      mimeType: {
+        type: String,
+        enum: ["application/pdf"],
+      },
+
+      fileSize: {
+        type: Number,
+        max: 10 * 1024 * 1024,
+      },
+    },
   },
   {
     timestamps: true,
@@ -69,4 +90,3 @@ const courseSchema = new mongoose.Schema(
 const Course = mongoose.model("Course", courseSchema);
 
 export default Course;
-

@@ -1,6 +1,8 @@
 
 import Course from "../models/courseSchema.js";
 
+import fs from "fs/promises";
+import path from "path";
 // HELPER: GET CATEGORY REGISTRY
 const getCategoryRegistry = async () => {
   let registry = await Course.findOne({
@@ -193,6 +195,7 @@ export const deleteCategory = async (req, res) => {
 // ==========================================
 
 // 1. CREATE COURSE
+
 export const createCourse = async (req, res) => {
   try {
     const { name, category, fee, duration } = req.body;
@@ -204,6 +207,8 @@ export const createCourse = async (req, res) => {
     );
 
     if (!categoryExists) {
+      await deleteUploadedFile(req.file?.filename);
+
       return res.status(400).json({
         success: false,
         message: "Please select a valid category",
@@ -216,6 +221,7 @@ export const createCourse = async (req, res) => {
       category,
       fee,
       duration,
+      upload: getUploadDetails(req.file),
     });
 
     return res.status(201).json({
@@ -224,13 +230,14 @@ export const createCourse = async (req, res) => {
       course,
     });
   } catch (error) {
+    await deleteUploadedFile(req.file?.filename);
+
     return res.status(400).json({
       success: false,
       message: error.message,
     });
   }
 };
-
 // 2. GET ALL COURSES
 export const getAllCourses = async (req, res) => {
   try {
@@ -285,6 +292,7 @@ export const getCourseById = async (req, res) => {
 };
 
 // 4. UPDATE COURSE
+// 4. UPDATE COURSE
 export const updateCourse = async (req, res) => {
   try {
     const { name, category, fee, duration } = req.body;
@@ -301,6 +309,8 @@ export const updateCourse = async (req, res) => {
       );
 
       if (!categoryExists) {
+        await deleteUploadedFile(req.file?.filename);
+
         return res.status(400).json({
           success: false,
           message: "Please select a valid category",
@@ -313,12 +323,36 @@ export const updateCourse = async (req, res) => {
     if (fee !== undefined) updateData.fee = fee;
     if (duration !== undefined) updateData.duration = duration;
 
+    // If a new PDF is uploaded, replace the old one
+    if (req.file) {
+      updateData.upload = getUploadDetails(req.file);
+    }
+
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({
         success: false,
         message: "Please provide fields to update",
       });
     }
+
+    const existingCourse = await Course.findOne({
+      _id: req.params.id,
+      $or: [
+        { recordType: "course" },
+        { recordType: { $exists: false } },
+      ],
+    });
+
+    if (!existingCourse) {
+      await deleteUploadedFile(req.file?.filename);
+
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    const oldFileName = existingCourse.upload?.fileName;
 
     const course = await Course.findOneAndUpdate(
       {
@@ -336,10 +370,17 @@ export const updateCourse = async (req, res) => {
     );
 
     if (!course) {
+      await deleteUploadedFile(req.file?.filename);
+
       return res.status(404).json({
         success: false,
         message: "Course not found",
       });
+    }
+
+    // Delete old PDF only after successful database update
+    if (req.file && oldFileName) {
+      await deleteUploadedFile(oldFileName);
     }
 
     return res.status(200).json({
@@ -348,6 +389,8 @@ export const updateCourse = async (req, res) => {
       course,
     });
   } catch (error) {
+    await deleteUploadedFile(req.file?.filename);
+
     return res.status(400).json({
       success: false,
       message: error.message,
@@ -355,7 +398,57 @@ export const updateCourse = async (req, res) => {
   }
 };
 
+// GET COURSE PDF
+export const getCourseUpload = async (req, res) => {
+  try {
+    const course = await Course.findOne({
+      _id: req.params.id,
+      $or: [
+        { recordType: "course" },
+        { recordType: { $exists: false } },
+      ],
+    });
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    if (!course.upload?.fileName) {
+      return res.status(404).json({
+        success: false,
+        message: "No PDF uploaded for this course",
+      });
+    }
+
+    const filePath = path.join(
+      uploadDirectory,
+      path.basename(course.upload.fileName)
+    );
+
+    return res.download(
+      filePath,
+      course.upload.originalName || course.upload.fileName,
+      (error) => {
+        if (error && !res.headersSent) {
+          return res.status(404).json({
+            success: false,
+            message: "PDF file not found",
+          });
+        }
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 // 5. DELETE COURSE
+
 export const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findOneAndDelete({
@@ -373,6 +466,8 @@ export const deleteCourse = async (req, res) => {
       });
     }
 
+    await deleteUploadedFile(course.upload?.fileName);
+
     return res.status(200).json({
       success: true,
       message: "Course deleted successfully",
@@ -383,4 +478,36 @@ export const deleteCourse = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+// PDF UPLOAD HELPERS
+const uploadDirectory = path.join(
+  process.cwd(),
+  "uploads",
+  "courses"
+);
+
+const deleteUploadedFile = async (fileName) => {
+  if (!fileName) return;
+
+  try {
+    await fs.unlink(
+      path.join(uploadDirectory, path.basename(fileName))
+    );
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      console.error("PDF delete error:", error.message);
+    }
+  }
+};
+
+const getUploadDetails = (file) => {
+  if (!file) return undefined;
+
+  return {
+    fileName: file.filename,
+    originalName: file.originalname,
+    mimeType: file.mimetype,
+    fileSize: file.size,
+  };
 };

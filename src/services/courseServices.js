@@ -38,6 +38,18 @@ export const getCourseUploadUrl = (id) => {
   return `${baseURL.replace(/\/$/, "")}/courses/${id}/upload`;
 };
 
+// Fetch PDF with session authentication
+export const getCourseUpload = async (id) => {
+  const response = await api.get(
+    `/courses/${id}/upload`,
+    {
+      responseType: "blob",
+    }
+  );
+
+  return response.data;
+};
+
 // ==========================================
 // CATEGORY SERVICES
 // ==========================================

@@ -27,6 +27,7 @@ import {
   getCategoryById,
   deleteCategory,
    getCourseUploadUrl,
+    getCourseUpload,
 } from "../../services/courseServices.js";
 
 const initialFormData = {
@@ -213,6 +214,23 @@ const [fileError, setFileError] = useState("");
 setExistingUpload(null);
 setFileError("");
   };
+  const handleOpenCoursePDF = async (course) => {
+  try {
+    const pdfBlob = await getCourseUpload(course._id);
+
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    window.open(pdfUrl, "_blank", "noopener,noreferrer");
+
+  } catch (error) {
+    console.error("Open PDF error:", error);
+
+    alert(
+      error.response?.data?.message ||
+        "Unable to open course PDF."
+    );
+  }
+};
 
   // OPEN EDIT COURSE MODAL
   const handleEdit = (course) => {
@@ -419,20 +437,19 @@ setFileError("");
       render: (course) =>
         `${course.duration} Months`,
     },
-    {
+ {
   key: "upload",
   header: "Uploads",
   render: (course) =>
     course.upload?.fileName ? (
-      <a
-        href={getCourseUploadUrl(course._id)}
-        target="_blank"
-        rel="noreferrer"
+      <button
+        type="button"
+        onClick={() => handleOpenCoursePDF(course)}
         className="text-sm text-purple-600 hover:underline"
-        title={course.upload.originalName || "Open PDF"}
+        title="Open PDF"
       >
         {course.upload.originalName || "View PDF"}
-      </a>
+      </button>
     ) : (
       <span className="text-sm text-gray-400">
         —

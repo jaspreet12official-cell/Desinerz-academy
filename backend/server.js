@@ -1,10 +1,8 @@
-
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-
 import connectDB from "./config/db.js";
 import adminRoutes from "./routes/adminRoute.js";
 import courseRoutes from "./routes/courseRoute.js";

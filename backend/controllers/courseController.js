@@ -399,6 +399,7 @@ export const updateCourse = async (req, res) => {
 };
 
 // GET COURSE PDF
+
 export const getCourseUpload = async (req, res) => {
   try {
     const course = await Course.findOne({
@@ -428,18 +429,23 @@ export const getCourseUpload = async (req, res) => {
       path.basename(course.upload.fileName)
     );
 
-    return res.download(
-      filePath,
-      course.upload.originalName || course.upload.fileName,
-      (error) => {
-        if (error && !res.headersSent) {
-          return res.status(404).json({
-            success: false,
-            message: "PDF file not found",
-          });
-        }
-      }
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${path.basename(
+        course.upload.originalName || course.upload.fileName
+      )}"`
     );
+
+    return res.sendFile(filePath, (error) => {
+      if (error && !res.headersSent) {
+        return res.status(404).json({
+          success: false,
+          message: "PDF file not found",
+        });
+      }
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -447,6 +453,7 @@ export const getCourseUpload = async (req, res) => {
     });
   }
 };
+
 // 5. DELETE COURSE
 
 export const deleteCourse = async (req, res) => {
